@@ -1,0 +1,38 @@
+name: Update SVGs
+
+on:
+  schedule:
+    - cron: "0 */12 * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Update stats
+        run: python today.py
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          USER_NAME: ${{ github.repository_owner }}
+
+      - name: Commit and push changes
+        run: |
+          git config user.name github-actions
+          git config user.email actions@github.com
+          git add dark_mode.svg light_mode.svg cache/
+          git diff --staged --quiet || git commit -m "Update SVGs with new metrics"
+          git push
