@@ -1,6 +1,6 @@
 <h2 align="center">Alibi Ulanuly</h2>
 
-<p align="center">Junior Go Developer · Student at KBTU</p>
+<p align="center">Software Engineer · Go Developer · Student at KBTU</p>
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/Uranury/Uranury/main/koi/koi.gif" width="384" alt="My koi, redrawn every night from my GitHub activity">
