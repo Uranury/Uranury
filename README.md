@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="mailto:a_ulanuly@kbtu.kz"><img src="assets/email.svg" alt="Email: a_ulanuly@kbtu.kz"></a>
+  <a href="mailto:alarmy126@gmail.com"><img src="assets/email.svg" alt="Email: alarmy126@gmail.com"></a>
   <a href="https://x.com/touna333"><img src="assets/twitter.svg" alt="Twitter: @touna333"></a>
   <a href="https://www.linkedin.com/in/alibi-ulanuly"><img src="assets/linkedin.svg" alt="LinkedIn: alibi-ulanuly"></a>
   <img src="assets/discord.svg" alt="Discord: afferenian">
