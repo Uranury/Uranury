@@ -15,7 +15,7 @@ TAGLINE = "Software Engineer · Go Developer · Student at KBTU"
 
 # (label, handle, icon, icon colour)
 SOCIALS = {
-    "email": ("EMAIL", "a_ulanuly@kbtu.kz", "mail", "#f2994a"),
+    "email": ("EMAIL", "alarmy126@gmail.com", "mail", "#f2994a"),
     "twitter": ("TWITTER", "@touna333", "x", "#e6edf3"),
     "linkedin": ("LINKEDIN", "in/alibi-ulanuly", "in", "#4da3ff"),
     "discord": ("DISCORD", "afferenian", "discord", "#8c95ff"),
