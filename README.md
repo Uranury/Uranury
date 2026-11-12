@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Uranury/Uranury/main/koi/koi.gif" width="384" alt="My koi, redrawn every night from my GitHub activity">
+  <img src="https://raw.githubusercontent.com/Uranury/Uranury/main/koi/koi.gif" width="512" alt="My koi, redrawn every night from my GitHub activity">
 </p>
 
 <p align="center">
