@@ -142,6 +142,25 @@ def pixel_text(text, x, y, s):
     return "".join(f'<rect x="{x + c * s}" y="{y + r * s}" width="{s}" height="{s}"/>' for c, r in pixels)
 
 
+# Underwater palette for the social cards: stepped water bands (top to bottom),
+# the waves rolling along the seabed, and the rim.
+WATER = ["#0f3d5e", "#0d3354", "#0b2a4a", "#0a2240"]
+WAVE_BACK, WAVE_FRONT, FOAM = "#0f4a6b", "#13607f", "#5fc4d9"
+RIM = "#1f6f8b"
+
+
+def wave(w, base, s, heights, fill, crest):
+    """A pixel wave: one column per entry in `heights`, repeated across 2 extra periods so it can scroll."""
+    period = len(heights) * s
+    body, foam = [], []
+    for x in range(-period, w + period, s):
+        hgt = heights[(x // s) % len(heights)]
+        top = base - hgt * s
+        body.append(f'<rect x="{x}" y="{top + s}" width="{s}" height="{base - top}"/>')
+        foam.append(f'<rect x="{x}" y="{top}" width="{s}" height="{s}"/>')
+    return f'<g fill="{fill}">{"".join(body)}</g><g fill="{crest}">{"".join(foam)}</g>', period
+
+
 def banner(key, index):
     label, handle, icon, colour = SOCIALS[key]
     w, h = 190, 56
@@ -158,24 +177,47 @@ def banner(key, index):
         if ch == "#"
     )
     delay = index * 1.1
+
+    band = h / len(WATER)
+    water = "".join(
+        f'<rect x="0" y="{i * band:.0f}" width="{w}" height="{band + 1:.0f}" fill="{c}"/>' for i, c in enumerate(WATER)
+    )
+    back, back_p = wave(w, h - 2, 2, [1, 2, 2, 3, 4, 4, 3, 2, 1, 1, 1, 1], WAVE_BACK, WAVE_FRONT)
+    front, front_p = wave(w, h - 2, 2, [0, 1, 1, 2, 3, 2, 1, 0, 0, 0], WAVE_FRONT, FOAM)
+
+    # Bubbles drift up from the icon, staggered so one is always in flight.
+    bubbles = "".join(
+        f'<rect class="bubble" x="{bx}" y="16" width="{bs}" height="{bs}" style="animation-delay:{delay + bd:.1f}s"/>'
+        for bx, bs, bd in [(42, 2, 0), (45, 3, 1.3), (41, 2, 2.4)]
+    )
+
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="{label.title()}: {handle}">
 <style>
   .bob {{ animation: bob 2.4s steps(2, jump-none) {delay:.1f}s infinite; }}
   @keyframes bob {{ 0%, 100% {{ transform: translateY(0); }} 50% {{ transform: translateY(-2px); }} }}
-  .glint {{ animation: glint 6s ease-in-out {delay:.1f}s infinite; }}
-  @keyframes glint {{ 0%, 70% {{ transform: translateX(-80px); }} 100% {{ transform: translateX({w + 40}px); }} }}
-  @media (prefers-reduced-motion: reduce) {{ .bob, .glint {{ animation: none; }} }}
+  .ray {{ animation: ray 7s ease-in-out {delay:.1f}s infinite; }}
+  @keyframes ray {{ 0%, 60% {{ transform: translateX(-60px) skewX(-25deg); }} 100% {{ transform: translateX({w + 40}px) skewX(-25deg); }} }}
+  .back {{ animation: back 3.2s steps({back_p // 2}) infinite; }}
+  @keyframes back {{ from {{ transform: translateX(0); }} to {{ transform: translateX(-{back_p}px); }} }}
+  .front {{ animation: front 2s steps({front_p // 2}) infinite; }}
+  @keyframes front {{ from {{ transform: translateX(0); }} to {{ transform: translateX({front_p}px); }} }}
+  .bubble {{ opacity: 0; animation: rise 3.6s steps(8) infinite; }}
+  @keyframes rise {{ 0% {{ transform: translateY(0); opacity: 0; }} 15% {{ opacity: .9; }} 100% {{ transform: translateY(-16px); opacity: 0; }} }}
+  @media (prefers-reduced-motion: reduce) {{ .bob, .ray, .back, .front, .bubble {{ animation: none; }} }}
 </style>
 <defs><clipPath id="card"><path d="{card}"/></clipPath></defs>
-<path d="{card}" fill="#0d2240"/>
 <g clip-path="url(#card)">
+  {water}
+  <rect class="ray" x="0" y="-10" width="18" height="{h + 20}" fill="#7fd4ff" opacity="0.07" transform="translate(-60 0)" style="transform-origin:0 0"/>
+  <g class="back" opacity="0.85">{back}</g>
+  <g class="front" opacity="0.8">{front}</g>
   <rect x="0" y="0" width="4" height="{h}" fill="{colour}"/>
-  <rect class="glint" x="0" y="-10" width="22" height="{h + 20}" fill="#ffffff" opacity="0.08" transform="translate(-80 0)" style="transform-origin:0 0"/>
 </g>
-<path d="{card}" fill="none" stroke="#2f5a8f" stroke-width="4" clip-path="url(#card)"/>
+<path d="{card}" fill="none" stroke="{RIM}" stroke-width="4" clip-path="url(#card)"/>
+<g fill="#bfeaf5">{bubbles}</g>
 <g class="bob" fill="{colour}">{icon_px}</g>
 <g fill="#e6edf3">{pixel_text(label, 52, 12, 2)}</g>
-<text x="52" y="43" font-family="{MONO}" font-size="11" fill="#9ec5ff">{handle}</text>
+<text x="52" y="43" font-family="{MONO}" font-size="11" fill="#9edcf0">{handle}</text>
 </svg>
 """
 
